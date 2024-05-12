@@ -2,7 +2,7 @@ UCDP_GED_ZIP = ged231-csv.zip
 UCDP_GED_CSV = GEDEvent_v23_1.csv
 UCDP_GED_URL = https://ucdp.uu.se/downloads/ged/$(UCDP_GED_ZIP)
 
-all: osm2pgsql $(UCDP_GED_CSV) ogr2ogr-ucdp-ged
+all: tmp/kanto-latest.osm.pbf osm2pgsql $(UCDP_GED_CSV) ogr2ogr-ucdp-ged
 
 .PHONY: setup
 setup:
