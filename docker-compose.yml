@@ -1,0 +1,36 @@
+services:
+  pg_tileserv:
+    image: pramsey/pg_tileserv:20231005
+    container_name: pg_tileserv
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@pg_tileserv_db/tileserv
+    depends_on:
+      - pg_tileserv_db
+    ports:
+      - "7800:7800"
+    restart: always
+
+  pg_tileserv_db:
+    image: postgis/postgis:15-3.4
+    container_name: pg_tileserv_db
+    volumes:
+      - ./data:/work
+      - ./tmp:/app/tmp
+      - pg_tileserv_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: tileserv
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
+    ports:
+      - "0.0.0.0:54321:5432"
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pg_tileserv_db:
