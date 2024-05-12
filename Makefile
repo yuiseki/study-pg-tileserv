@@ -60,3 +60,29 @@ ogr2ogr-significant-earthquake:
 		--debug ON \
 		./tmp/Significant\ Earthquake\ Dataset\ 1900-2023.csv
 
+.PHONY: ogr2ogr-opt-health-facilities
+ogr2ogr-opt-health-facilities:
+	ogr2ogr \
+		-overwrite \
+		-f "PostgreSQL" PG:"dbname=tileserv user=postgres password=postgres host=localhost port=54321" \
+		-oo AUTODETECT_TYPE=YES \
+		-nln "palestine_health_facilities" \
+		--config PG_USE_COPY YES \
+		--debug ON \
+		./tmp/oPt-healthfacilities/health_facilities_oPt.shp
+
+.PHONY: ogr2ogr-noto-evacuation-site-2024
+ogr2ogr-noto-evacuation-site-2024:
+	nkf -w --cp932 tmp/all_hinanjyocsv_20240321180034.csv > tmp/all_hinanjyocsv_20240321180034-utf_8.csv
+	ogr2ogr \
+		-overwrite \
+		-f "PostgreSQL" PG:"dbname=tileserv user=postgres password=postgres host=localhost port=54321" \
+		-oo AUTODETECT_TYPE=YES \
+		-oo X_POSSIBLE_NAMES=longitude \
+		-oo Y_POSSIBLE_NAMES=latitude \
+		-lco ENCODING=UTF-8 \
+		-a_srs EPSG:4326 \
+		-nln "noto_evacuation_site_2024" \
+		--config PG_USE_COPY YES \
+		--debug ON \
+		./tmp/all_hinanjyocsv_20240321180034-utf_8.csv
