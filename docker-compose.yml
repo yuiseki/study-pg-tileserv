@@ -11,7 +11,7 @@ services:
     restart: always
 
   pg_tileserv_db:
-    image: postgis/postgis:16-3.4
+    image: postgis/postgis:15-3.4
     container_name: pg_tileserv_db
     command: postgres -c default_statistics_target=100 -c max_connections=100 -c max_locks_per_transaction=64 -c checkpoint_timeout=30min -c maintenance_work_mem=1GB -c effective_cache_size=16GB -c work_mem=500MB -c max_wal_size=10GB -c wal_buffers=16MB -c shared_buffers=8GB
     volumes:
