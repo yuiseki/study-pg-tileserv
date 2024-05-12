@@ -14,8 +14,6 @@ services:
     image: postgis/postgis:15-3.4
     container_name: pg_tileserv_db
     volumes:
-      - ./data:/work
-      - ./tmp:/app/tmp
       - pg_tileserv_db:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
