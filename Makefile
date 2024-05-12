@@ -15,9 +15,8 @@ tmp/kanto-latest.osm.pbf:
 osm2pgsql:
 	osm2pgsql --create --database=tileserv --slim --username=postgres --password --host=localhost --port 54321 ./tmp/kanto-latest.osm.pbf
 
-# -append -update
-.PHONY: ogr2ogr
-ogr2ogr:
+.PHONY: ogr2ogr-ucdp-ged
+ogr2ogr-ucdp-ged:
 	ogr2ogr \
 		-overwrite \
 		-f "PostgreSQL" PG:"dbname=tileserv user=postgres password=postgres host=localhost port=54321" \
@@ -31,3 +30,29 @@ ogr2ogr:
 		--config PG_USE_COPY YES \
 		--debug ON \
 		./tmp/$(UCDP_GED_CSV)
+
+.PHONY: ogr2ogr-japan-evacuation-site-de
+ogr2ogr-japan-evacuation-site-de:
+	ogr2ogr \
+		-overwrite \
+		-f "PostgreSQL" PG:"dbname=tileserv user=postgres password=postgres host=localhost port=54321" \
+		-oo AUTODETECT_TYPE=YES \
+		-nln "japan_evacuation_site_de" \
+		--config PG_USE_COPY YES \
+		--debug ON \
+		./tmp/00_全国_指定緊急避難場所/all.shp
+
+.PHONY: ogr2ogr-significant-earthquake
+ogr2ogr-significant-earthquake:
+	ogr2ogr \
+		-overwrite \
+		-f "PostgreSQL" PG:"dbname=tileserv user=postgres password=postgres host=localhost port=54321" \
+		-oo AUTODETECT_TYPE=YES \
+		-oo X_POSSIBLE_NAMES=Longitude \
+		-oo Y_POSSIBLE_NAMES=Latitude \
+		-a_srs EPSG:4326 \
+		-nln "significant_earthquake" \
+		--config PG_USE_COPY YES \
+		--debug ON \
+		./tmp/Significant\ Earthquake\ Dataset\ 1900-2023.csv
+
