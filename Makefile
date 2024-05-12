@@ -4,6 +4,10 @@ UCDP_GED_URL = https://ucdp.uu.se/downloads/ged/$(UCDP_GED_ZIP)
 
 all: osm2pgsql $(UCDP_GED_CSV) ogr2ogr-ucdp-ged
 
+.PHONY: setup
+setup:
+	sudo apt install -y wget unzip osm2pgsql gdal-bin
+
 tmp/kanto-latest.osm.pbf:
 	wget https://download.geofabrik.de/asia/japan/kanto-latest.osm.pbf -O ./tmp/kanto-latest.osm.pbf
 
