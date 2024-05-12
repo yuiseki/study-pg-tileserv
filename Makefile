@@ -2,11 +2,7 @@ UCDP_GED_ZIP = ged231-csv.zip
 UCDP_GED_CSV = GEDEvent_v23_1.csv
 UCDP_GED_URL = https://ucdp.uu.se/downloads/ged/$(UCDP_GED_ZIP)
 
-all: $(UCDP_GED_CSV)
-
-GEDEvent_v23_1.csv:
-	ls ./tmp/$(UCDP_GED_ZIP) || wget $(UCDP_GED_URL) -O ./tmp/$(UCDP_GED_ZIP)
-	unzip ./tmp/$(UCDP_GED_ZIP)
+all: osm2pgsql $(UCDP_GED_CSV) ogr2ogr-ucdp-ged
 
 tmp/kanto-latest.osm.pbf:
 	wget https://download.geofabrik.de/asia/japan/kanto-latest.osm.pbf -O ./tmp/kanto-latest.osm.pbf
@@ -14,6 +10,10 @@ tmp/kanto-latest.osm.pbf:
 .PHONY: osm2pgsql
 osm2pgsql:
 	osm2pgsql --create --database=tileserv --slim --username=postgres --password --host=localhost --port 54321 ./tmp/kanto-latest.osm.pbf
+
+GEDEvent_v23_1.csv:
+	ls ./tmp/$(UCDP_GED_ZIP) || wget $(UCDP_GED_URL) -O ./tmp/$(UCDP_GED_ZIP)
+	unzip ./tmp/$(UCDP_GED_ZIP) -d ./tmp
 
 .PHONY: ogr2ogr-ucdp-ged
 ogr2ogr-ucdp-ged:

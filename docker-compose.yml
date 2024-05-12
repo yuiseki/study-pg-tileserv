@@ -7,7 +7,7 @@ services:
     depends_on:
       - pg_tileserv_db
     ports:
-      - "7800:7800"
+      - "8080:7800"
     restart: always
 
   pg_tileserv_db:
