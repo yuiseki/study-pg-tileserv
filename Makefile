@@ -8,26 +8,18 @@ all: tmp/kanto-latest.osm.pbf osm2pgsql $(UCDP_GED_CSV) ogr2ogr-ucdp-ged
 setup:
 	sudo apt install -y wget unzip osm2pgsql gdal-bin
 
+.PHONY: osm2pgsql
+osm2pgsql: osm2pgsql-japan
+
+tmp/japan-latest.osm.pbf:
+	wget https://download.geofabrik.de/asia/japan-latest.osm.pbf -O ./tmp/japan-latest.osm.pbf
+
+.PHONY: osm2pgsql-japan
+osm2pgsql-japan: tmp/japan-latest.osm.pbf
+	osm2pgsql --create --database=tileserv --slim --username=postgres --password --host=localhost --port 54321 ./tmp/japan-latest.osm.pbf
+
 tmp/kanto-latest.osm.pbf:
 	wget https://download.geofabrik.de/asia/japan/kanto-latest.osm.pbf -O ./tmp/kanto-latest.osm.pbf
-
-.PHONY: osm2pgsql-kanto
-osm2pgsql-kanto:
-	osm2pgsql --create --database=tileserv --slim --username=postgres --password --host=localhost --port 54321 ./tmp/kanto-latest.osm.pbf
-
-tmp/chubu-latest.osm.pbf:
-	wget https://download.geofabrik.de/asia/japan/chubu-latest.osm.pbf -O ./tmp/chubu-latest.osm.pbf
-
-.PHONY: osm2pgsql-chubu
-osm2pgsql-chubu:
-	osm2pgsql --create --database=tileserv --slim --username=postgres --password --host=localhost --port 54321 ./tmp/chubu-latest.osm.pbf
-
-tmp/kansai-latest.osm.pbf:
-	wget https://download.geofabrik.de/asia/japan/kansai-latest.osm.pbf -O ./tmp/kansai-latest.osm.pbf
-
-.PHONY: osm2pgsql-kansai
-osm2pgsql-kansai:
-	osm2pgsql --create --database=tileserv --slim --username=postgres --password --host=localhost --port 54321 ./tmp/kansai-latest.osm.pbf
 
 GEDEvent_v23_1.csv:
 	ls ./tmp/$(UCDP_GED_ZIP) || wget $(UCDP_GED_URL) -O ./tmp/$(UCDP_GED_ZIP)
@@ -100,3 +92,14 @@ ogr2ogr-noto-evacuation-site-2024:
 		--config PG_USE_COPY YES \
 		--debug ON \
 		./tmp/all_hinanjyocsv_20240321180034-utf_8.csv
+
+.PHONY: ogr2ogr-japan-popluation-2018
+ogr2ogr-japan-popluation-2018:
+	ogr2ogr \
+		-overwrite \
+		-f "PostgreSQL" PG:"dbname=tileserv user=postgres password=postgres host=localhost port=54321" \
+		-oo AUTODETECT_TYPE=YES \
+		-nln "japan_population_2018" \
+		--config PG_USE_COPY YES \
+		--debug ON \
+		./tmp/A002005212015DDSWC13/h27ka13.shp
