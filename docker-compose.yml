@@ -1,6 +1,6 @@
 services:
   pg_tileserv:
-    image: pramsey/pg_tileserv:20240312
+    image: pramsey/pg_tileserv:20240614
     container_name: pg_tileserv
     environment:
       - DATABASE_URL=postgres://postgres:postgres@pg_tileserv_db/tileserv
